@@ -291,6 +291,30 @@ const searchName = (req, res) => {
   });
 };
 
+const updateLastDog = (req, res) => {
+  // Your model is JSON, so just change a value in it.
+  // This is the benefit of ORM (mongoose) and/or object documents (Mongo NoSQL)
+  // You can treat objects just like that - objects.
+  // Normally you'd find a specific object, but we will only
+  // give the user the ability to update our last object
+  lastAddedDog.age++;
+
+  // once you change all the object properties you want,
+  // then just call the Model object's save function
+  // create a new save promise for the database
+  const savePromise = lastAddedDog.save();
+
+  // send back the name as a success for now
+  savePromise.then(() => res.json({
+    name: lastAddedDog.name,
+    breed: lastAddedDog.breed,
+    age: lastAddedDog.age,
+  }));
+
+  // if save error, just return an error for now
+  savePromise.catch((err) => res.status(500).json({ err }));
+};
+
 const searchDogName = (req, res) => {
   // check if there is a query parameter for name
   // BUT WAIT!!?!
@@ -352,30 +376,6 @@ const updateLast = (req, res) => {
 
   // send back the name as a success for now
   savePromise.then(() => res.json({ name: lastAdded.name, beds: lastAdded.bedsOwned }));
-
-  // if save error, just return an error for now
-  savePromise.catch((err) => res.status(500).json({ err }));
-};
-
-const updateLastDog = (req, res) => {
-  // Your model is JSON, so just change a value in it.
-  // This is the benefit of ORM (mongoose) and/or object documents (Mongo NoSQL)
-  // You can treat objects just like that - objects.
-  // Normally you'd find a specific object, but we will only
-  // give the user the ability to update our last object
-  lastAddedDog.age++;
-
-  // once you change all the object properties you want,
-  // then just call the Model object's save function
-  // create a new save promise for the database
-  const savePromise = lastAddedDog.save();
-
-  // send back the name as a success for now
-  savePromise.then(() => res.json({
-    name: lastAddedDog.name,
-    breed: lastAddedDog.breed,
-    age: lastAddedDog.age,
-  }));
 
   // if save error, just return an error for now
   savePromise.catch((err) => res.status(500).json({ err }));
